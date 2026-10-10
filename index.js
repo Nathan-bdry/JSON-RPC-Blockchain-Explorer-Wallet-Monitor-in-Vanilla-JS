@@ -7,15 +7,27 @@ const RPC_URL = process.env.ETHEREUM_ENDPOINT;
 
 const PORT = 3000;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     const { method, url } = req;
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
 
     if (method == 'GET' && url === '/uptime') {
         return res.end(JSON.stringify({ message: 'test', time: uptime() }));
     }
 
-    if (method === 'GET' && url === '/test') {
-        return res.end('test');
+    if (method === 'GET' && url === '/lastblock') {
+        return res.end(JSON.stringify(await lastBlock()));
+    }
+
+    if (method === 'GET' && url.startsWith('/addressBalance/')) {
+        const address = url.replace('/addressBalance/', '')
+        return res.end(JSON.stringify(await AddressBalance(address)));
+    }
+
+    if (method === 'GET' && url.startsWith('/txDetails/')) {
+        const txHash = url.replace('/txDetails/', '')
+        return res.end(JSON.stringify(await txDetails(txHash)));
     }
 
     res.end(JSON.stringify({ error: 'Path not found' }));
@@ -61,8 +73,8 @@ async function rpcCall(endpoint, method, params = []) {
 const lastBlock = async () => {
 
     const blockHex = await rpcCall(RPC_URL, 'eth_blockNumber');
-    console.log('Bloc (hex)', blockHex);
-    console.log('Bloc (number) :', parseInt(blockHex, 16));
+    const blockNumber = parseInt(blockHex, 16);
+    return { blockHex, blockNumber };
 }
 
 // Obtain address balance
@@ -71,9 +83,9 @@ const AddressBalance = async (address) => {
 
     const balanceHex = await rpcCall(RPC_URL, 'eth_getBalance', [address, 'latest']);
     const balanceWei = BigInt(balanceHex);
-    const balanceEth = Number(balanceWei) / 1e18;
+    const balanceEth = (Number(balanceWei) / 1e18).toFixed(4);
 
-    console.log(`Balance : ${balanceEth.toFixed(4)} ETH`);
+    return { balanceEth }
 }
 
 
@@ -84,14 +96,11 @@ const txDetails = async (txHash) => {
     const tx = await rpcCall(RPC_URL, 'eth_getTransactionByHash', [txHash])
 
     if (!tx) {
-        console.log('Transaction not found on the blockchain')
+        return Error
     } else {
-        console.log('From :', tx.from);
-        console.log('To :', tx.to);
-        console.log('Value :', Number(BigInt(tx.value)) / 1e18);
+        const from = tx.from;
+        const to = tx.to;
+        const value = Number(BigInt(tx.value)) / 1e18;
+        return { from, to, value }
     }
 }
-
-await lastBlock();
-await AddressBalance('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045');
-await txDetails('0xfa53c20abe98de83c7fbd8fa1347478145affa386f8a086beba90a1004605391');
