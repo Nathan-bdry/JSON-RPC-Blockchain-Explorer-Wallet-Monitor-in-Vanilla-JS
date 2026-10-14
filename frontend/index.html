@@ -1,17 +1,149 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Monitor Blockchain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Monitor & Explorer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #38bdf8;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+
+        .block-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin: 1rem 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            outline: 2px solid #38bdf8;
+        }
+
+        button {
+            padding: 0.6rem 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result-box {
+            background: #0f172a;
+            border-radius: 6px;
+            padding: 0.8rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            min-height: 50px;
+            color: #cbd5e1;
+        }
+    </style>
 </head>
 
-<body style="font-family: sans-serif; background: #111; color: #fff; padding: 2rem;">
-    <h1>Ethereum Live Monitor</h1>
-    <p>Last block mined : <strong id="block-display">Waiting...</strong></p>
-
-    <!-- Chrome download and execute app.js there : -->
+<body>
+    <header>
+        <h1>Ethereum Monitor & Explorer</h1>
+    </header>
+    <div class="dashboard">
+        <!-- Compartment 1 : Last Block -->
+        <section class="card">
+            <h2>Last Block</h2>
+            <div id="block-display" class="block-number">Loading...</div>
+            <p style="color: #64748b; font-size: 0.85rem;">Live updates via WebSocket / SSE</p>
+        </section>
+        <!-- Compartment 2 : Address Balance -->
+        <section class="card">
+            <h2>Wallet Balance</h2>
+            <div class="input-group">
+                <input type="text" id="wallet-input" placeholder="0x..." />
+                <button id="wallet-btn">Verify</button>
+            </div>
+            <div id="wallet-result" class="result-box">Enter an Ethereum address</div>
+        </section>
+        <!-- Compartment 3 : Transaction Details -->
+        <section class="card">
+            <h2>Transaction Details</h2>
+            <div class="input-group">
+                <input type="text" id="tx-input" placeholder="0x..." />
+                <button id="tx-btn">Search</button>
+            </div>
+            <div id="tx-result" class="result-box">Enter a transaction hash</div>
+        </section>
+        <!-- Compartment 4 : Live Wallet Tracking -->
+        <section class="card">
+            <h2>Wallet Tracking</h2>
+            <div class="input-group">
+                <input type="text" id="track-input" placeholder="0x..." />
+                <button id="track-btn">Track</button>
+            </div>
+            <div id="track-result" class="result-box">Enter a wallet address to track</div>
+        </section>
+    </div>
     <script src="/app.js"></script>
 </body>
 

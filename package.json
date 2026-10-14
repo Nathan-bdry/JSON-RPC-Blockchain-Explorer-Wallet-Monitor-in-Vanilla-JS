@@ -1,7 +1,7 @@
 {
   "name": "json-rpc-blockchain-explorer-and-wallet-monitor-in-vanilla-js",
   "version": "1.0.0",
-  "description": "A tool executable on a browser without any framework that communicate directly with RPC Ethereum nodes without using librairies like Ether.js or Web3.js",
+  "description": "A lightweight tool running in the browser without any framework that communicates directly with Ethereum RPC nodes without third-party libraries (no Ethers.js, no Web3.js).",
   "license": "ISC",
   "author": "Nathan_bdry",
   "type": "module",
